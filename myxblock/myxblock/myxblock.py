@@ -2,7 +2,7 @@
 
 import pkg_resources
 from xblock.core import XBlock
-from xblock.fields import Integer,Boolean, Scope
+from xblock.fields import Integer, Scope
 from xblock.fragment import Fragment
 
 
@@ -15,14 +15,10 @@ class MyXBlock(XBlock):
     # self.<fieldname>.
 
     # TO-DO: delete count, and define your own fields.
-    upvotes = Integer(help="Number of up votes", default=0,
-        scope=Scope.user_state_summary)
-
-    downvotes = Integer(help="Number of down votes", default=0,
-        scope=Scope.user_state_summary)
-
-    voted = Boolean(help="Has this student voted?", default=False,
-        scope=Scope.user_state)
+    count = Integer(
+        default=0, scope=Scope.user_state,
+        help="A simple counter, to show something happening",
+    )
 
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
@@ -44,25 +40,16 @@ class MyXBlock(XBlock):
 
     # TO-DO: change this handler to perform your own actions.  You may need more
     # than one handler, or you may not need any handlers at all.
-    
     @XBlock.json_handler
     def increment_count(self, data, suffix=''):
         """
         An example handler, which increments the data.
         """
         # Just to show data coming in...
-        if data['voteType'] not in ('up', 'down'):
-            log.error('error!')
-            return
+        assert data['hello'] == 'world'
 
-        if data['voteType'] == 'up':
-            self.upvotes += 1
-        else:
-            self.downvotes += 1
-
-        self.voted = True
-
-        return {'up': self.upvotes, 'down': self.downvotes}
+        self.count += 1
+        return {"count": self.count}
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.
